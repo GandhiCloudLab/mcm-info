@@ -66,7 +66,7 @@ CPU, Memory and Network can be seen more detailed at the Kubernetes POD level.
 
 ### Network
 
-<img src="images/12-network.png" bordercolor=green>
+<img src="images/12-network1.png" bordercolor=green>
 
 
 <img src="images/13-cpu-memory.png" bordercolor=green>
