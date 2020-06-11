@@ -40,26 +40,41 @@ You can choose the any of the API and find the tracing details as like the below
 The detailed explnation from the knowledge center is available at https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/monitor_tt.html
 
 
-## 3. CPU and Memory usage
+## 3. CPU, Memory and Network
 
-CPU and Memory usage can be seen more detailed at the Kubernetes POD level.
+CPU Memory and Network can be seen more detailed at the Kubernetes POD level.
 
-<img src="images/09-cpu.png" bordercolor=green>
+<img src="images/09-pod.png" bordercolor=green>
 
-<img src="images/10-memory.png" bordercolor=green>
+1. CPU
+2. Memory
+3. Network
 
-<img src="images/11-cpu-memory.png" bordercolor=green>
+### CPU
+
+<img src="images/10-cpu.png" bordercolor=green>
+
+### Memory
+
+<img src="images/11-memory.png" bordercolor=green>
+
+### Network
+
+<img src="images/12-network.png" bordercolor=green>
+
+
+<img src="images/13-cpu-memory.png" bordercolor=green>
 
 
 ## 4. Thread usage
 
 Thread usage can be seen for the springboot applications at J2SE Application Runtime.
 
-<img src="images/12-standalone-app-home.png" bordercolor=green>
+<img src="images/14-standalone-app-home.png" bordercolor=green>
 
-<img src="images/13-standalone-app-home2.png" bordercolor=green>
+<img src="images/15-standalone-app-home2.png" bordercolor=green>
 
-<img src="images/14-standalone-app-thread.png" bordercolor=green>
+<img src="images/16-standalone-app-thread.png" bordercolor=green>
 
 
 ## References
