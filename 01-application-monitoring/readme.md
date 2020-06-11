@@ -30,6 +30,7 @@ The below image shows the Golden signals of an app in Kubernetes Serivce.
 
 <img src="images/04-saturation.png" bordercolor=green>
 
+-------
 
 ## 2. Tracing / transaction tracking
 
@@ -45,6 +46,7 @@ You can choose the any of the API and find the tracing details as like the below
 
 The detailed explnation from the knowledge center is available at https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/monitor_tt.html
 
+-------
 
 ## 3. CPU, Memory and Network
 
@@ -71,6 +73,7 @@ CPU, Memory and Network can be seen more detailed at the Kubernetes POD level.
 
 <img src="images/13-cpu-memory.png" bordercolor=green>
 
+-------
 
 ## 4. Thread usage
 
@@ -82,6 +85,7 @@ Thread usage can be seen for the springboot applications at J2SE Application Run
 
 <img src="images/16-standalone-app-thread.png" bordercolor=green>
 
+-------
 
 ## References
 
