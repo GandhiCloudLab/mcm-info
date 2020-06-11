@@ -2,6 +2,12 @@
 
 Application monitoring in IBM Cloud Pak for Multicloud Management provides various indicators like the below.
 
+- Execution Time and Memory Usage
+- Tracing / transaction tracking
+- CPU, Memory and Network
+- Thread usage
+
+
 ## 1. Execution Time and Memory Usage
 
 The below image shows the Golden signals of an app in Kubernetes Serivce.
@@ -42,7 +48,7 @@ The detailed explnation from the knowledge center is available at https://www.ib
 
 ## 3. CPU, Memory and Network
 
-CPU Memory and Network can be seen more detailed at the Kubernetes POD level.
+CPU, Memory and Network can be seen more detailed at the Kubernetes POD level.
 
 <img src="images/09-pod.png" bordercolor=green>
 
