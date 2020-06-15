@@ -4,20 +4,14 @@ Here are some steps to Implement Runtime Data collector for the spring boot appl
 
 ## 1. PreRequisite
 
-### 1.1. Installing the Monitoring klusterlet on a managed cluster
-
-Monitoring Klusterlet to be installed on the managed cluster using the below url.
-
-https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.3.0/icam/install_mcm_klusterlet_no_helm.html
-
-### 1.2. Obtain the hub server config info
+### 1.1. Obtain the hub server config info
 
 Obtain the hub server config info using the below url. As as result you might have downloaded with `ibm-cloud-apm-dc-configpack.tar`.
 
 https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/dc_config_server_info.html
 
 
-### 1.3. Downloading the J2SE data collector
+### 1.2. Downloading the J2SE data collector
 
 Downloading the J2SE data collector using the below url. As as result you might have got  `j2se_datacollector.tgz`.
 
@@ -45,7 +39,7 @@ Note: These files are available in this repo.
 
 ### 2.3. Create icam-server-secret
 
-a) Extract the tar file `ibm-cloud-apm-dc-configpack.tar` that was downloaded in step 1.2. 
+a) Extract the tar file `ibm-cloud-apm-dc-configpack.tar` that was downloaded in step 1.1. 
 
 b) Get into to the folder `ibm-cloud-apm-dc-configpack` in the commandline.
 
@@ -67,7 +61,7 @@ https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/config_J2SE_dc_mon
 
 a) Create some `temp` folder.
 
-b) Copy the `j2se_datacollector.tgz` file that was downloaded in step 1.3 into the `temp` folder. 
+b) Copy the `j2se_datacollector.tgz` file that was downloaded in step 1.2 into the `temp` folder. 
 
 c) Rename the springboot application jar file into `app.jar` and copy to the `temp` folder. 
 
