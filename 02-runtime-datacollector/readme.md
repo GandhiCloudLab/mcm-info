@@ -84,14 +84,14 @@ c) Create springboot application jar.
 
 1. Goto the root folder of the application.
 
-2. Build the app
+2. Build the app and it creates .jar file
 
     Run `gradle build` , if you have gradle. 
+
         or
+
     Run `mvn clean package`, if you have maven. 
 
-    jar file might have been created. 
-    
 3. Rename the jar file into `app.jar`
 
 4. Copy `app.jar`  to `temp` folder. 
