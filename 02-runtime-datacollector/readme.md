@@ -57,26 +57,9 @@ Here we are going to do some steps to build docker image which are mentioned in 
 
 https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/config_J2SE_dc_monitor_icp_apps.html
 
-### 3.1. Build your app
-
-The app can be build using `maven` or `gradle`.
-
-a) In case of maven Create some `temp` folder.
-
-b) Copy the `j2se_datacollector.tgz` file that was downloaded in step 1.2 into the `temp` folder. 
-
-c) Rename the springboot application jar file into `app.jar` and copy to the `temp` folder. 
-
-d) Copy the docker file from `/files/docker/Dockerfile` into the `temp` folder. 
-
-e) Copy the silent file from `/files/docker/silent_config_j2se_dc.txt` into the `temp` folder. 
-
-f) Update the silent file `silent_config_j2se_dc.txt` in the `temp` folder.
-    The `MAIN_CLASS` key should be substittued with your Springboot main class.
-
 ### 3.1. Copy files
 
-a) Create some `temp` folder.
+a) Create `temp` folder.
 
 b) Copy the `j2se_datacollector.tgz` file that was downloaded in step 1.2 into the `temp` folder. 
 
