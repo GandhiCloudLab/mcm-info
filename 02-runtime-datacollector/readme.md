@@ -88,7 +88,7 @@ c) Create springboot application jar.
 
     Run `gradle build` , if you have gradle. 
 
-        or
+    or
 
     Run `mvn clean package`, if you have maven. 
 
