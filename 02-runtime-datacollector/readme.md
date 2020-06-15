@@ -80,21 +80,21 @@ a) Create some `temp` folder.
 
 b) Copy the `j2se_datacollector.tgz` file that was downloaded in step 1.2 into the `temp` folder. 
 
-c) Create springboot application jar 
+c) Create springboot application jar.
 
-    1. Goto the root folder of the application.
+1. Goto the root folder of the application.
 
-    2. Build the app
+2. Build the app
 
-        Run `gradle build` , if you have gradle. 
-            or
-        Run `mvn clean package`, if you have maven. 
+    Run `gradle build` , if you have gradle. 
+        or
+    Run `mvn clean package`, if you have maven. 
 
-        jar file might have been created. 
-      
-    3. Rename the jar file into `app.jar`
+    jar file might have been created. 
+    
+3. Rename the jar file into `app.jar`
 
-    4. Copy `app.jar`  to `temp` folder. 
+4. Copy `app.jar`  to `temp` folder. 
 
 d) Copy the docker file from `/files/docker/Dockerfile` into the `temp` folder. 
 
