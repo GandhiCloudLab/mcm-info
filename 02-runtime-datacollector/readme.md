@@ -1,6 +1,6 @@
-# Runtime Data collector
+# Runtime Data collector for Springboot application in Openshift
 
-Here are some steps to Implement Runtime Data collector for the spring boot application.
+Here are some steps to Implement Runtime Data collector for the spring boot application in Openshift container platform.
 
 ## 1. PreRequisite
 
