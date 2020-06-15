@@ -1,0 +1,135 @@
+---
+# Source: fpro-channel/templates/21-deployable-web.yaml
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: fpro-deployable-deployment-web
+  namespace: fpro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: fpro-application
+    subapp: bankweb
+spec:
+  template:
+    kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: fpro-bankweb
+      namespace: fpro-icam-app-ns
+      labels:
+        app.kubernetes.io/name: bankweb
+        app.kubernetes.io/instance: fpro-application
+    spec:
+      selector:
+        matchLabels:
+          app: fpro-application
+          subname: bankweb
+          app.kubernetes.io/name: bankweb
+          app.kubernetes.io/instance: fpro-application
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            app: fpro-application
+            subname: bankweb
+            app.kubernetes.io/name: bankweb
+            app.kubernetes.io/instance: fpro-application
+        spec:
+          containers:
+            - name: container-web
+              image: "<<IMAGE_NAME>>:latest"
+              imagePullPolicy: Always
+              ports:
+                - name: my-http
+                  containerPort: 9030
+                  protocol: TCP
+                - name: https
+                  containerPort: 8083
+              env:
+                - name: LOG_REST_PAYLOAD
+                  value: "true"
+                - name: IBM_APM_RESTCLIENT_LOGLEVEL
+                  value: DEBUG_MAX
+                - name: OPENTRACING_ENABLED
+                  value: "true"
+                - name: JAEGER_SAMPLER_TYPE
+                  value: probabilistic
+                - name: JAEGER_SAMPLER_PARAM
+                  value: "1"
+                - name: LATENCY_SAMPLER_PARAM
+                  value: "1"
+              volumeMounts:
+                - name: global-environment
+                  mountPath: /opt/ibm/apm/serverconfig
+          volumes:
+            - name: global-environment
+              secret:
+                secretName: icam-server-secret
+                optional: true
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: fpro-deployable-service-web
+  namespace: fpro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: fpro-application
+    subapp: bankweb
+spec:
+  template:
+    kind: Service
+    apiVersion: v1
+    metadata:
+      name: fpro-bankweb
+      namespace: fpro-icam-app-ns
+      labels:
+        app: fpro-application
+        subname: bankweb
+        app.kubernetes.io/name: bankweb
+        app.kubernetes.io/instance: fpro-application
+      annotations:
+        # mcm.ibm.com/service-discovery: "{}"
+    spec:
+      type: ClusterIP
+      ports:
+        - port: 9090
+          targetPort: my-http
+          protocol: TCP
+          name: my-http
+      selector:
+        app: fpro-application
+        subname: bankweb
+        app.kubernetes.io/name: bankweb
+        app.kubernetes.io/instance: fpro-application
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: fpro-deployable-route-web
+  namespace: fpro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: fpro-application
+    subapp: bankweb
+spec:
+  template:
+    kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: fpro-bankweb
+      namespace: fpro-icam-app-ns
+      labels:
+        app: fpro-application
+        subname: bankweb
+    spec:
+      path: /
+      to:
+        kind: Service
+        name: fpro-bankweb
+        weight: 100
+      port:
+        targetPort: my-http

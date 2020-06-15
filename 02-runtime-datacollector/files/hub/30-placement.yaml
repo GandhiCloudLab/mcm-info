@@ -1,0 +1,15 @@
+apiVersion: app.ibm.com/v1alpha1
+kind: PlacementRule
+metadata:
+  name: fpro-bankweb
+  namespace: fpro-icam-subscription-ns
+  labels:
+    app: fpro-application
+spec:
+  clusterReplicas: 1
+  clusterLabels:
+    matchExpressions:
+      - key: name
+        operator: In
+        values:
+        - abcd-cluster

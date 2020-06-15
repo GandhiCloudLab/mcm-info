@@ -1,0 +1,24 @@
+apiVersion: app.ibm.com/v1alpha1
+kind: Subscription
+metadata:
+  name: subscription-fpro-bankweb
+  namespace: fpro-icam-subscription-ns
+  labels:
+    app: fpro-application
+spec:
+  channel: fpro-icam-channel-ns/fpro-channel
+  packageFilter:
+    labelSelector:
+      matchLabels:
+        app: fpro-application
+        subapp: bankweb        
+  placement:
+    placementRef:
+      name: fpro-bankweb
+      kind: PlacementRule
+      group: app.ibm.com
+  overrides:
+  - clusterName: "/"
+    clusterOverrides:
+    - path: "metadata.namespace"
+      value: fpro-icam-app-ns

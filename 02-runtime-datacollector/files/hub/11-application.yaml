@@ -1,0 +1,19 @@
+---
+# Source: fpro-subscription/templates/11-application.yaml
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: fpro-application
+  namespace: fpro-icam-subscription-ns
+  labels:
+    app: fpro-application
+spec:
+  selector:
+    matchExpressions:
+    - key: app
+      operator: In
+      values:
+      - fpro-application
+  componentKinds:
+  - group: app.ibm.com
+    kind: Subscription

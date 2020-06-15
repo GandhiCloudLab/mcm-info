@@ -1,0 +1,9 @@
+JAVA_HOME=/opt/ibm/java/jre
+# APPLICATION_TYPE, 1:Java Application, 2:Jetty Server
+APPLICATION_TYPE=1
+APPLICATION_HOME=/opt/app.jar
+MAIN_CLASS=com.cpro.commissionservice.CommissionServiceApplication
+APPLICATION_ALIAS=j2seApp
+TT_STATUS=TRUE
+DD_STATUS=FALSE
+MT_STATUS=TRUE

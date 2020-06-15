@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fpro-icam-app-ns
+  labels:
+    app: fpro-application
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fpro-icam-channel-ns
+  labels:
+    app: fpro-application
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fpro-icam-subscription-ns
+  labels:
+    app: fpro-application

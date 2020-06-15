@@ -1,0 +1,113 @@
+# Runtime Data collector
+
+Here is some steps to Implement Runtime Data collector for the spring boot application.
+
+## 1. PreRequisite
+
+### 1.1. Installing the Monitoring klusterlet on a managed cluster
+
+Monitoring Klusterlet to be installed on the managed cluster using the below url.
+
+https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.3.0/icam/install_mcm_klusterlet_no_helm.html
+
+### 1.2. Obtain the hub server config info
+
+Obtain the hub server config info using the below url. As as result you might have downloaded with `ibm-cloud-apm-dc-configpack.tar`.
+
+https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/dc_config_server_info.html
+
+
+### 1.3. Downloading the J2SE data collector
+
+Downloading the J2SE data collector using the below url. As as result you might have got  `j2se_datacollector.tgz`.
+
+https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/dc_config_server_info.html
+
+
+## 2. Installing on Managed Cluster
+
+Here are we are going to do some steps in managed cluster which are mentioned in the below kc pages.
+
+https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/dc_config_authorize.html
+https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/config_J2SE_dc_monitor_icp_apps.html
+
+### 2.1. Login into managed cluster
+
+a) Login into managed cluster using `oc login`
+
+fpro-icam-app-ns
+
+### 2.2. Create Namespace
+
+Lets as assume we are going to deploy the app in the `fpro-icam-app-ns`. 
+
+a) oc apply the file  `files/managed-cluster/00-namespace-app.yaml`
+
+### 2.3. Create icam-server-secret
+
+Lets as assume we are going to deploy the app in the `fpro-icam-app-ns`. 
+
+a) Extract the tar file `ibm-cloud-apm-dc-configpack.tar` that was downloaded in step 1.2. 
+
+b) Get into to the folder `ibm-cloud-apm-dc-configpack`
+
+c) Run the file  `files/managed-cluster/03-icam-server-secret.sh`
+
+### 2.4 Create role and role binding
+
+a) oc apply the file  `files/managed-cluster/01-lwdc-clusterrole.yaml`
+b) oc apply the file  `files/managed-cluster/02-lwdc-rolebinding.yaml`
+
+## 3. Building Docker Image for SpringBoot application.
+
+Here are we are going to do some steps to build docker image which are mentioned in the below kc pages.
+
+https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/config_J2SE_dc_monitor_icp_apps.html
+
+### 3.1. Copy files
+
+a) Create some `temp` folder.
+
+b) Copy the tgz file `j2se_datacollector.tgz` that was downloaded in step 1.3 into the `temp` folder. 
+
+c) Rename the springboot application jar file into `app.jar` and copy to the `temp` folder. 
+
+d) Copy the docker file from `/files/docker/Dockerfile` into the `temp` folder. 
+
+e) Copy the silent file from `/files/docker/silent_config_j2se_dc.txt` into the `temp` folder. 
+
+f) Update the silent file `silent_config_j2se_dc.txt` in the `temp` folder.
+    The `MAIN_CLASS` key should be substittued with your Springboot main class.
+
+### 3.2. Build docker image
+
+a) Goto the above `temp` folder.
+
+b) Run `docker build ......` command to create docker image 
+
+c) Run `docker push ......` command to push the docker image 
+
+## 4. Deploying Springboot app in the MCM hub
+
+Here are we are going deploy the app in MCM hub. The below kc page contains the info about it.
+
+https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/config_J2SE_dc_monitor_icp_apps.html
+
+### 4.1. Deploy the app
+
+The sample deployment files with Channel and Subscriptions are available at the location 
+
+`/files/hub/`
+
+a) Replace the `<<IMAGE_NAME>>` with the actual image that you create above in the file `/files/hub/21-deployable-bankweb.yaml`
+
+b Update the managed cluster details in the file `/files/hub/30-placement.yaml`
+
+c) oc apply to the folder `files/hub/`
+
+### 4.2. Access the app
+
+a) In the managed cluster, the namespace `fpro-icam-app-ns`, should have some route created. Using the route you can access the app.
+
+b). Create some workload and you can get to see the golden signals in the hub.
+

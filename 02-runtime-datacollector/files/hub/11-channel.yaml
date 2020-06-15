@@ -1,0 +1,12 @@
+apiVersion: app.ibm.com/v1alpha1
+kind: Channel
+metadata:
+  name: fpro-channel
+  namespace: fpro-icam-channel-ns
+  labels:
+    app: fpro-application
+spec:
+  type: Namespace
+  pathname: fpro-icam-channel-ns
+  sourceNamespaces:
+    - fpro-icam-app-ns
