@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: icam-reloader
+  namespace: multicluster-endpoint
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      name: icam-reloader
+  template:
+    metadata:
+      labels:
+        name: icam-reloader
+    spec:
+      containers:
+        - name: icam-reloader
+          # Replace this with the built image name
+          image: image-registry.openshift-image-registry.svc:5000/multicluster-endpoint/reloader:202002170811-multi-arch
+          imagePullPolicy: Always
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "100Mi"
+            requests:
+              cpu: "50m"
+              memory: "50Mi"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000

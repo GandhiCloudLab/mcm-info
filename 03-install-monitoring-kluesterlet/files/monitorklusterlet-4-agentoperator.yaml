@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agentoperator
+  namespace: multicluster-endpoint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: agentoperator
+  template:
+    metadata:
+      labels:
+        name: agentoperator
+    spec:
+      serviceAccountName: icamklust
+      containers:
+        - name: agentoperator
+         # Replace this with the built image name
+          image: image-registry.openshift-image-registry.svc:5000/multicluster-endpoint/agentoperator:APM_202003100816
+          imagePullPolicy: Always
+          command:
+            - agentoperator
+          args:
+            - "--image-repo=image-registry.openshift-image-registry.svc:5000/multicluster-endpoint"
+            - "--image-prefix="
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "agentoperator"
+          volumeMounts:
+          - name: klusterlet-config
+            mountPath: /opt/klusterlet
+      volumes:
+        - name: klusterlet-config
+          secret:
+            secretName: endpoint-connmgr-hub-kubeconfig
