@@ -96,7 +96,7 @@ docker login $my_registry_name -u $(oc whoami) -p $(oc whoami -t)
 
 #### 3. Upload docker images
 
-Upload the images by running the below command.
+Upload the images by running the below commands.
 
 ```
 docker load -i images/agentoperator_APM_202003100816.tar.gz
@@ -221,7 +221,20 @@ kubectl get deployment agentoperator --namespace=multicluster-endpoint
 kubectl get deployment k8sdc-cr-k8monitor --namespace=multicluster-endpoint
 ```
 
-## Apependix
+## 6. Update MCM Hub for Monitoring.
+
+When a managed cluster is imported, the namespace corresponding to the managed cluster is created at the hub cluster. 
+To activate monitoring of the managed cluster resources, add the namespace as a resource to a Monitoring team. 
+
+You can add the namespace by completing the following steps:
+
+- In the navigation, select Manage > Identity and Access > Teams.
+- Select the team that you want to update.
+- Select Manage resources.
+- Select the checkbox for namespace that you want to add to the team.
+- Select Save to save your changes.
+
+## Appendix
 
 ### Exposing Openshift container registry
 
@@ -233,7 +246,7 @@ Steps given here to expose the container registry in RHOCP 4.3
 oc create route passthrough --service=image-registry -n openshift-image-registry
 ```
 
-2. Run the below command to see the create routes
+2. Run the below command to see the created routes
 
 ```
 oc get routes -n openshift-image-registry
@@ -246,7 +259,7 @@ NAME   HOST/PORT PATH   SERVICES         PORT       TERMINATION   WILDCARD
 gan    docker-registry-default.ocp43-mcm-managed-d-7asdf-0000.xx-yy.containers.appdomain.cloud          image-registry   5000-tcp   passthrough   None
 ```
 
-3. Run the below command to verify the registry is accssible.
+3. Run the below command to verify the registry is accessible.
 
 Here hostpath is taken form the above step.
 
