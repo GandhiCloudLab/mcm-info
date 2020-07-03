@@ -1,10 +1,11 @@
 # Importing Managed Cluster 
 
+In this documentation, lets see how to import a Cluster into Multicloud Management hub cluster as an **account administrator**. 
+
 A Kubernetes cluster B is imported into IBM Cloud Pak® for Multicloud Management hub cluster A and it become a managed cluster for the hub cluster.
 
 <img src="images/00-cluster.png" bordercolor=green>
 
-In this documentation, lets see how to import a Cluster into Multicloud Management hub cluster **as an account administrator**. 
 
 IBM Knowledge center document contains the detailed explanation about the same. This documentation is a snapshot of it.
 https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/mcm/manage_cluster/import_gui.html#import
@@ -59,7 +60,7 @@ ID                     Name
 2a82-45f9              demo-account   
 id-mycluster-account   mycluster Account  
 ```
-The account id for the acount  `demo-account` is `2a82-45f9`
+The account id for the account  `demo-account` is `2a82-45f9`
 
 #### 4. Find the `account id` annotated in the namespace.
 
@@ -99,7 +100,7 @@ We observe that, the value of `mcm.ibm.com/accountID` is not equivalent to the `
 
 #### 5. Patch the right `account id` in the namespace.
 
-Replace the <<NAMESAPCE>> and <<ACCOUNT_ID>> appropriately and run the below command.
+Replace the << NAMESAPCE>> and <<ACCOUNT_ID>> appropriately and run the below command.
 
 ```
 kubectl annotate --overwrite namespace <<NAMESAPCE>> mcm.ibm.com/accountID='<<ACCOUNT_ID>>'
@@ -142,30 +143,8 @@ kubectl annotate --overwrite namespace ocp43-mcm-gan-a mcm.ibm.com/accountID='2a
 
 2. Run the above copied command by pasting it in the command line window.
 
-3. Few objects would get created. An error would occure. Try running the same command again. Now it should work.
+3. Few objects would get created. An error would occur. Try running the same command again. Now it should work.
 
----------
-
-## 3. Run the Import command in Managed Cluster
-
-
-2. Click `Add Cluster`.
-
-<img src="images/02-cluster-list.png" bordercolor=green>
-
-3. Select `Import an existing cluster by running a command on your cluster`. Then, click `Select` button.
-
-<img src="images/03-add-cluster.png" bordercolor=green>
-
-4. Enter unique values for the `Cluster name` and `Namespace` fields. Then, click `Generate Command` button.
-
-<img src="images/04-add-cluster2.png" bordercolor=green>
-
-5. Click on `Copy Command icon` to copy the commands to run in the targetted managed cluster.
-
-<img src="images/05-import-command.png" bordercolor=green>
-
-The cluster is imported into hub cluster and become a managed cluster.
 ---------
 
 ## 4. View the imported cluster.
@@ -178,4 +157,5 @@ The cluster is imported into hub cluster and become a managed cluster.
 
 <img src="images/06-imported-clustr.png" bordercolor=green>
 
+The cluster is imported into hub cluster and become a managed cluster.
 ---------
