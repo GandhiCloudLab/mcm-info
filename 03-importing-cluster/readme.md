@@ -157,5 +157,6 @@ kubectl annotate --overwrite namespace ocp43-mcm-gan-a mcm.ibm.com/accountID='2a
 
 <img src="images/06-imported-clustr.png" bordercolor=green>
 
-The cluster is imported into hub cluster and become a managed cluster.
+   The cluster is imported into hub cluster and become a managed cluster.
+
 ---------
