@@ -7,7 +7,6 @@ Contains information related to IBM Cloud Pak for Multicloud Management
 | 1         | [Application Monitoring ](01-application-monitoring)  |  Application Monitoring Graphs   |
 | 2         | [Runtime Data Collector ](02-runtime-datacollector)  |  Runtime Data collector for Springboot application in Openshift   |
 | 3         | [Importing Cluster ](03-importing-cluster)  |  Importing Managed Cluster  |
-
 | 4         | [Installing Monitoring klusterlet ](04-install-monitoring-kluesterlet)  |  Installing Monitoring klusterlet on a managed cluster  |
 | 5         | [Implementing MCM Service Discovery ](https://github.com/GandhiCloudLab/service-discovery-mcm-130-ocp43)  |  Implementing MCM Service Discovery in RHOCP 4.3 Clusters  |
 | 6         | [Sample MCM App using Namespace ](https://github.com/GandhiCloudLab/mcm-130/tree/master/mutual-app)  |  Sample MCM App using Namespace  |
