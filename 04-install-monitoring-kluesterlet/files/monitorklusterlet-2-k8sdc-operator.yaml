@@ -31,4 +31,4 @@ spec:
             - name: OPERATOR_NAME
               value: "k8sdc-operator"
           imagePullSecrets:
-            - name: deployer-dockercfg-sssd2
+            - name: deployer-dockercfg-2fdnz
