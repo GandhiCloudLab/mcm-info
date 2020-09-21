@@ -1,0 +1,188 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gpro-app-ns
+  labels:
+    app: gpro-application
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gpro-channel-ns
+  labels:
+    app: gpro-application
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gpro-subscription-ns
+  labels:
+    app: gpro-application
+---
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: gpro
+  namespace: gpro-subscription-ns
+  labels:
+    app: gpro-application
+spec:
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - gpro-application
+  componentKinds:
+    - group: app.ibm.com/v1alpha1
+      kind: Subscription
+  descriptor: {}
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Channel
+metadata:
+  name: gpro-channel
+  namespace: gpro-channel-ns
+  labels:
+    app: gpro-application
+spec:
+  type: Namespace
+  pathname: gpro-channel-ns
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Subscription
+metadata:
+  name: gpro-subscription
+  namespace: gpro-subscription-ns
+  labels:
+    app: gpro-application
+spec:
+  channel: gpro-channel-ns/gpro-channel
+  packageFilter:
+    labelSelector:
+      matchLabels:
+        app: gpro-application
+  placement:
+    placementRef:
+      name: gpro-placementrule
+      kind: PlacementRule
+  overrides:
+    - clusterName: /
+      clusterOverrides:
+        - path: metadata.namespace
+          value: gpro-app-ns
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: PlacementRule
+metadata:
+  name: gpro-placementrule
+  namespace: gpro-subscription-ns
+  labels:
+    app: gpro-application
+spec:
+  clusterReplicas: 1
+  clusterLabels:
+    matchLabels:
+      name: cluster11
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: gpro-deployable-deployment-frontweb
+  namespace: gpro-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: gpro-application
+    subapp: frontweb
+spec:
+  template:
+    kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: gpro-frontweb
+      namespace: gpro-app-ns
+      labels:
+        app: gpro-application
+        subname: frontweb
+    spec:
+      selector:
+        matchLabels:
+          app: gpro-application
+          subname: frontweb
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            app: gpro-application
+            subname: frontweb
+        spec:
+          containers:
+            - name: container-nginx
+              image: "gandhicloudlab/cpro-bankweb:latest"
+              imagePullPolicy: Always
+              ports:
+                - name: my-http
+                  containerPort: 9030
+              resources:
+                {}
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: gpro-deployable-service-frontweb
+  namespace: gpro-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: gpro-application
+    subapp: frontweb
+spec:
+  template:
+    kind: Service
+    apiVersion: v1
+    metadata:
+      name: gpro-frontweb
+      namespace: gpro-ns
+      labels:
+        app: gpro-application
+        subname: frontweb
+    spec:
+      type: LoadBalancer
+      ports:
+        - name: my-http
+          port: 9090
+          targetPort: my-http
+      selector:
+        app: gpro-application
+        subname: frontweb
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: gpro-deployable-route-frontweb
+  namespace: gpro-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: gpro-application
+    subapp: frontweb
+spec:
+  template:
+    kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: gpro-frontweb
+      namespace: gpro-ns
+      labels:
+        app: gpro-application
+        subname: frontweb
+    spec:
+      path: /
+      to:
+        kind: Service
+        name: gpro-frontweb
+        weight: 100
+      port:
+        targetPort: my-http
+---
