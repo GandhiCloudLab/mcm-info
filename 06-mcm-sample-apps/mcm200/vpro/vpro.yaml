@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vpro-ns
+  labels:
+    app: vpro-application
+---
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: vpro
+  namespace: vpro-ns
+  labels:
+    app: vpro-application
+spec:
+  selector:
+    matchLabels:
+      app: vpro-application
+  componentKinds:
+    - group: core.hybridapp.io
+      kind: Deployable
+  descriptor: {}
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: PlacementRule
+metadata:
+  name: vpro-placementrule
+  namespace: vpro-ns
+  labels:
+    app: vpro-application
+spec:
+  clusterReplicas: 1
+  clusters:
+    - name: ilender-apps-cluster
+---
+apiVersion: core.hybridapp.io/v1alpha1
+kind: Deployable
+metadata:
+  name: vpro-deployable-deployment-frontweb
+  namespace: vpro-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: vpro-application
+    subapp: frontweb
+spec:
+  hybridtemplates:
+    - deployerType: kubernetes
+      template:
+        kind: Deployment
+        apiVersion: apps/v1
+        metadata:
+          name: vpro-frontweb
+          namespace: vpro-ns
+          labels:
+            app: vpro-application
+            subname: frontweb
+        spec:
+          selector:
+            matchLabels:
+              app: vpro-application
+              subname: frontweb
+          replicas: 1
+          template:
+            metadata:
+              labels:
+                app: vpro-application
+                subname: frontweb
+            spec:
+              containers:
+                - name: container-nginx
+                  image: "gandhicloudlab/cpro-bankweb:latest"
+                  ports:
+                    - name: my-http
+                      containerPort: 9030
+                      protocol: TCP
+  placement:
+    placementRef:
+      name: vpro-placementrule
