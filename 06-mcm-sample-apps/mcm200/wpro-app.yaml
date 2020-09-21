@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wpro-ns
+  labels:
+    app: wpro-application
+---
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: wpro
+  namespace: wpro-ns
+  labels:
+    app: wpro-application
+spec:
+  selector:
+    matchLabels:
+      app: wpro-application
+  componentKinds:
+    - group: core.hybridapp.io
+      kind: Deployable
+  descriptor: {}
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: PlacementRule
+metadata:
+  name: wpro-placementrule
+  namespace: wpro-ns
+  labels:
+    app: wpro-application
+spec:
+  clusterReplicas: 1
+  clusters:
+    - name: cluster11
+---
+apiVersion: core.hybridapp.io/v1alpha1
+kind: Deployable
+metadata:
+  name: wpro-deployable-deployment-frontweb
+  namespace: wpro-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: wpro-application
+    subapp: frontweb
+spec:
+  hybridtemplates:
+    - deployerType: kubernetes
+      template:
+        kind: Deployment
+        apiVersion: apps/v1
+        metadata:
+          name: wpro-frontweb
+          namespace: wpro-ns
+          labels:
+            app: wpro-application
+            subname: frontweb
+        spec:
+          selector:
+            matchLabels:
+              app: wpro-application
+              subname: frontweb
+          replicas: 1
+          template:
+            metadata:
+              labels:
+                app: wpro-application
+                subname: frontweb
+            spec:
+              containers:
+                - name: container-nginx
+                  image: "gandhicloudlab/cpro-bankweb:latest"
+                  ports:
+                    - name: my-http
+                      containerPort: 9030
+                      protocol: TCP
+  placement:
+    placementRef:
+      name: wpro-placementrule
