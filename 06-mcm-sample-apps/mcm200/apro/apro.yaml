@@ -1,120 +1,120 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: gpro-app-ns
+  name: apro-app-ns
   labels:
-    app: gpro-application
+    app: apro-application
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: gpro-channel-ns
+  name: apro-channel-ns
   labels:
-    app: gpro-application
+    app: apro-application
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: gpro-subscription-ns
+  name: apro-subscription-ns
   labels:
-    app: gpro-application
+    app: apro-application
 ---
 apiVersion: app.k8s.io/v1beta1
 kind: Application
 metadata:
-  name: gpro
-  namespace: gpro-subscription-ns
+  name: apro
+  namespace: apro-subscription-ns
   labels:
-    app: gpro-application
+    app: apro-application
 spec:
   selector:
-    matchExpressions:
-      - key: app
-        operator: In
-        values:
-          - gpro-application
+    matchLabels:
+      app: apro-application
   componentKinds:
     - group: app.ibm.com/v1alpha1
       kind: Subscription
-  descriptor: {}
 ---
 apiVersion: app.ibm.com/v1alpha1
 kind: Channel
 metadata:
-  name: gpro-channel
-  namespace: gpro-channel-ns
+  name: apro-channel
+  namespace: apro-channel-ns
   labels:
-    app: gpro-application
+    app: apro-application
 spec:
   type: Namespace
-  pathname: gpro-channel-ns
+  pathname: apro-channel-ns
 ---
 apiVersion: app.ibm.com/v1alpha1
 kind: Subscription
 metadata:
-  name: gpro-subscription
-  namespace: gpro-subscription-ns
+  name: apro-subscription
+  namespace: apro-subscription-ns
   labels:
-    app: gpro-application
+    app: apro-application
+    test: test1
 spec:
-  channel: gpro-channel-ns/gpro-channel
+  channel: apro-channel-ns/apro-channel
   packageFilter:
     labelSelector:
       matchLabels:
-        app: gpro-application
+        app: apro-application
   placement:
     placementRef:
-      name: gpro-placementrule
+      name: apro-placementrule
       kind: PlacementRule
   overrides:
     - clusterName: /
       clusterOverrides:
         - path: metadata.namespace
-          value: gpro-app-ns
+          value: apro-app-ns
 ---
 apiVersion: app.ibm.com/v1alpha1
 kind: PlacementRule
 metadata:
-  name: gpro-placementrule
-  namespace: gpro-subscription-ns
+  name: apro-placementrule
+  namespace: apro-subscription-ns
   labels:
-    app: gpro-application
+    app: apro-application
 spec:
-  clusterReplicas: 1
   clusterLabels:
-    matchLabels:
-      name: cluster11
+    matchExpressions:
+      - key: name
+        operator: In
+        values:
+          - mcm20-managed-cluster
+  clusterReplicas: 1
 ---
 apiVersion: app.ibm.com/v1alpha1
 kind: Deployable
 metadata:
-  name: gpro-deployable-deployment-frontweb
-  namespace: gpro-channel-ns
+  name: apro-deployable-deployment-frontweb
+  namespace: apro-channel-ns
   annotations:
     app.ibm.com/is-local-deployable: "false"
   labels:
-    app: gpro-application
+    app: apro-application
     subapp: frontweb
 spec:
   template:
     kind: Deployment
     apiVersion: apps/v1
     metadata:
-      name: gpro-frontweb
-      namespace: gpro-app-ns
+      name: apro-frontweb
+      namespace: apro-app-ns
       labels:
-        app: gpro-application
+        app: apro-application
         subname: frontweb
     spec:
       selector:
         matchLabels:
-          app: gpro-application
+          app: apro-application
           subname: frontweb
-      replicas: 1
+      replicas: 5
       template:
         metadata:
           labels:
-            app: gpro-application
+            app: apro-application
             subname: frontweb
         spec:
           containers:
@@ -130,22 +130,22 @@ spec:
 apiVersion: app.ibm.com/v1alpha1
 kind: Deployable
 metadata:
-  name: gpro-deployable-service-frontweb
-  namespace: gpro-channel-ns
+  name: apro-deployable-service-frontweb
+  namespace: apro-channel-ns
   annotations:
     app.ibm.com/is-local-deployable: "false"
   labels:
-    app: gpro-application
+    app: apro-application
     subapp: frontweb
 spec:
   template:
     kind: Service
     apiVersion: v1
     metadata:
-      name: gpro-frontweb
-      namespace: gpro-ns
+      name: apro-frontweb
+      namespace: apro-ns
       labels:
-        app: gpro-application
+        app: apro-application
         subname: frontweb
     spec:
       type: LoadBalancer
@@ -154,34 +154,34 @@ spec:
           port: 9090
           targetPort: my-http
       selector:
-        app: gpro-application
+        app: apro-application
         subname: frontweb
 ---
 apiVersion: app.ibm.com/v1alpha1
 kind: Deployable
 metadata:
-  name: gpro-deployable-route-frontweb
-  namespace: gpro-channel-ns
+  name: apro-deployable-route-frontweb
+  namespace: apro-channel-ns
   annotations:
     app.ibm.com/is-local-deployable: "false"
   labels:
-    app: gpro-application
+    app: apro-application
     subapp: frontweb
 spec:
   template:
     kind: Route
     apiVersion: route.openshift.io/v1
     metadata:
-      name: gpro-frontweb
-      namespace: gpro-ns
+      name: apro-frontweb
+      namespace: apro-ns
       labels:
-        app: gpro-application
+        app: apro-application
         subname: frontweb
     spec:
       path: /
       to:
         kind: Service
-        name: gpro-frontweb
+        name: apro-frontweb
         weight: 100
       port:
         targetPort: my-http

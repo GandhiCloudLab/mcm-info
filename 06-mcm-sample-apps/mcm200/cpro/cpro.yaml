@@ -1,0 +1,196 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cpro-app-ns
+  labels:
+    app: cpro-application
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cpro-channel-ns
+  labels:
+    app: cpro-application
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cpro-subscription-ns
+  labels:
+    app: cpro-application
+---
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: cpro
+  namespace: cpro-subscription-ns
+  labels:
+    app: cpro-application
+spec:
+  selector:
+    matchLabels:
+      app: cpro-application
+    # matchExpressions:
+    #   - key: app
+    #     operator: In
+    #     values:
+    #       - cpro-application
+  componentKinds:
+    - group: app.ibm.com/v1alpha1
+      kind: Subscription
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Channel
+metadata:
+  name: cpro-channel
+  namespace: cpro-channel-ns
+  labels:
+    app: cpro-application
+spec:
+  type: Namespace
+  pathname: cpro-channel-ns
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Subscription
+metadata:
+  name: cpro-subscription
+  namespace: cpro-subscription-ns
+  labels:
+    app: cpro-application
+    test: test1
+spec:
+  channel: cpro-channel-ns/cpro-channel
+  packageFilter:
+    labelSelector:
+      matchLabels:
+        app: cpro-application
+  placement:
+    placementRef:
+      name: cpro-placementrule
+      kind: PlacementRule
+  overrides:
+    - clusterName: /
+      clusterOverrides:
+        - path: metadata.namespace
+          value: cpro-app-ns
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: PlacementRule
+metadata:
+  name: cpro-placementrule
+  namespace: cpro-subscription-ns
+  labels:
+    app: cpro-application
+spec:
+  # clusterReplicas: 1
+  # clusters:
+  #   - name: mcm20-managed-cluster
+  clusterLabels:
+    matchExpressions:
+      - key: name
+        operator: In
+        values:
+          - mcm20-managed-cluster
+  clusterReplicas: 1
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: cpro-deployable-deployment-frontweb
+  namespace: cpro-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: cpro-application
+    subapp: frontweb
+spec:
+  template:
+    kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: cpro-frontweb
+      namespace: cpro-app-ns
+      labels:
+        app: cpro-application
+        subname: frontweb
+    spec:
+      selector:
+        matchLabels:
+          app: cpro-application
+          subname: frontweb
+      replicas: 5
+      template:
+        metadata:
+          labels:
+            app: cpro-application
+            subname: frontweb
+        spec:
+          containers:
+            - name: container-nginx
+              image: "gandhicloudlab/cpro-bankweb:latest"
+              imagePullPolicy: Always
+              ports:
+                - name: my-http
+                  containerPort: 9030
+              resources:
+                {}
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: cpro-deployable-service-frontweb
+  namespace: cpro-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: cpro-application
+    subapp: frontweb
+spec:
+  template:
+    kind: Service
+    apiVersion: v1
+    metadata:
+      name: cpro-frontweb
+      namespace: cpro-ns
+      labels:
+        app: cpro-application
+        subname: frontweb
+    spec:
+      type: LoadBalancer
+      ports:
+        - name: my-http
+          port: 9090
+          targetPort: my-http
+      selector:
+        app: cpro-application
+        subname: frontweb
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: cpro-deployable-route-frontweb
+  namespace: cpro-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: cpro-application
+    subapp: frontweb
+spec:
+  template:
+    kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: cpro-frontweb
+      namespace: cpro-ns
+      labels:
+        app: cpro-application
+        subname: frontweb
+    spec:
+      path: /
+      to:
+        kind: Service
+        name: cpro-frontweb
+        weight: 100
+      port:
+        targetPort: my-http
+---
