@@ -3,11 +3,13 @@
 ## Simple Apps with Channel and Subscription
 
  - [apro](apro) 
-  -[cpro](cpro) 
+
+ - [cpro](cpro) 
 
 ## Simple Apps with Hybird Deployables
 
 Note: These apps yet to be tested.
 
  - [vpro](vpro) 
-  -[wpro](wpro) 
+
+ - [wpro](wpro) 
