@@ -1,6 +1,6 @@
 # V-Pro application
 
-An Hybrid Application. (To be tested yet)
+An Hybrid Application.
 
 
 - MCM 2.0
