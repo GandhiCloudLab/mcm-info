@@ -31,7 +31,7 @@ metadata:
 spec:
   clusterReplicas: 1
   clusters:
-    - name: ilender-apps-cluster
+    - name: mcm-managed-cp4a-cluster
 ---
 apiVersion: core.hybridapp.io/v1alpha1
 kind: Deployable

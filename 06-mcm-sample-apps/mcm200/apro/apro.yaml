@@ -31,7 +31,7 @@ spec:
     matchLabels:
       app: apro-application
   componentKinds:
-    - group: app.ibm.com/v1alpha1
+    - group: app.ibm.com
       kind: Subscription
 ---
 apiVersion: app.ibm.com/v1alpha1
@@ -82,7 +82,7 @@ spec:
       - key: name
         operator: In
         values:
-          - mcm20-managed-cluster
+          - mcm-managed-cp4a-cluster
   clusterReplicas: 1
 ---
 apiVersion: app.ibm.com/v1alpha1

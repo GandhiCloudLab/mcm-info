@@ -6,5 +6,5 @@ An Hybrid Application. (To be tested yet)
 - MCM 2.0
 - Hybrid Application.
 
-You need to change the PlacementRule cluster the text "name: ilender-apps-cluster" appropriately in the yaml file.
+You need to change the PlacementRule cluster the text "name: mcm-managed-cp4a-cluster" appropriately in the yaml file.
 
