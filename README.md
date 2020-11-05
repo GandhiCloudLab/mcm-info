@@ -12,3 +12,5 @@ Contains information related to IBM Cloud Pak for Multicloud Management
 | 6         | [Sample MCM App using Namespace ](https://github.com/GandhiCloudLab/mcm-namespace-sample)  |  Sample MCM App using Namespace  |
 | 7         | [Sample MCM App using GitHub channel ](https://github.com/GandhiCloudLab/mcm-git-sample)  |  Installing MCM App using GitHub Channel in IBM Cloud Pak for Multicloud Management Version 1.3.0  |
 | 8         | [Sample MCM App using HelmRepo channel ](https://github.com/GandhiCloudLab/mcm-helm-sample)  |  Installing MCM App using HelmRepo Channel in IBM Cloud Pak for Multicloud Management Version 1.3.0  |
+| 9         | [MCM 1.3.x App Manangement and Monitoring Info ](05-mcm-130-app-and-montiroing)  |  MCM 1.3.x App Manangement and Monitoring Info  |
+| 10         | [MCM 2.x Sample Apps ](06-mcm-sample-apps/mcm200)  |  MCM 2.x Sample Apps  |
