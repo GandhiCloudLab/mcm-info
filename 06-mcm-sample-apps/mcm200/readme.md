@@ -15,4 +15,4 @@
 
 ## Simple Apps with Hybird Deployables with VM
 
- - [vzro](zpro) 
+ - [zpro](zpro) 
