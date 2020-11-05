@@ -1,0 +1,207 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zpro-ns
+  labels:
+    app: zpro-application
+---
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: zpro
+  namespace: zpro-ns
+  labels:
+    app: zpro-application
+spec:
+  selector:
+    matchLabels:
+      app: zpro-application
+  componentKinds:
+    - group: core.hybridapp.io
+      kind: Deployable
+  descriptor: {}
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: PlacementRule
+metadata:
+  name: zpro-placementrule
+  namespace: zpro-ns
+  labels:
+    app: zpro-application
+spec:
+  clusterReplicas: 1
+  clusters:
+    - name: mcm-managed-cp4a-cluster
+---
+apiVersion: core.hybridapp.io/v1alpha1
+kind: Deployable
+metadata:
+  name: zpro-deployable-deployment-frontweb
+  namespace: zpro-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: zpro-application
+    subapp: frontweb
+spec:
+  hybridtemplates:
+    - deployerType: kubernetes
+      template:
+        kind: Deployment
+        apiVersion: apps/v1
+        metadata:
+          name: zpro-frontweb
+          namespace: zpro-ns
+          labels:
+            app: zpro-application
+            subname: frontweb
+        spec:
+          selector:
+            matchLabels:
+              app: zpro-application
+              subname: frontweb
+          replicas: 1
+          template:
+            metadata:
+              labels:
+                app: zpro-application
+                subname: frontweb
+            spec:
+              containers:
+                - name: container-nginx
+                  image: "gandhicloudlab/cpro-bankweb:latest"
+                  ports:
+                    - name: my-http
+                      containerPort: 9030
+                      protocol: TCP
+  placement:
+    placementRef:
+      name: zpro-placementrule
+---
+apiVersion: infra.management.ibm.com/v1alpha1
+kind: Connection
+metadata:
+  annotations:
+    BypassAuth: "true"
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: imconnection-zpro-ns
+  namespace: zpro-ns
+spec:
+   cfHost: web-service.management-infrastructure-management.svc.cluster.local:3000
+--- 
+apiVersion: core.hybridapp.io/v1alpha1
+kind: Deployable
+metadata:
+  name: zpro-deployable-mq-vm
+  namespace: zpro-ns
+  generation: 1
+  labels:
+    app: zpro-application
+    subname: mq-vm
+spec:
+  hybridtemplates:
+    - deployerType: ibminfra
+      template:
+        apiVersion: infra.management.ibm.com/v1alpha1
+        kind: VirtualMachine
+        metadata:
+          name: zpro-mq-vm
+          namespace: zpro-ns
+          annotations:
+            infra.management.ibm.com/vmActionForDelete: retire
+        spec:
+          cfConnection:
+            name: imconnection-zpro-ns
+          options:
+            source_id: '1'
+            request_type: template
+            initial_pass: true
+            service_template_request: true
+            miq_request_dialog_name: miq_provision_amazon_dialogs_template
+            owner_email: mcmimadmin@gsilabs.ibm.com
+            customize_enabled:
+              - enabled
+            requester_enabled:
+              - disabled
+            purpose_enabled:
+              - disabled
+            current_tab_key: service
+            vm_tags: []
+            placement_auto:
+              - true
+              - 1
+            placement_availability_zone:
+              - null
+              - null
+            cloud_network:
+              - null
+              - null
+            cloud_subnet:
+              - null
+              - null
+            security_groups:
+              - null
+              - null
+            floating_ip_address:
+              - null
+              - null
+            number_of_vms:
+              - 1
+              - '1'
+            vm_description: null
+            vm_prefix: null
+            src_vm_id:
+              - 144
+              - ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20200610
+            vm_name: zpro-mq-vm
+            schedule_type:
+              - immediately
+              - Immediately on Approval
+            schedule_time: '2020-11-05T00:00:00.000Z'
+            retirement:
+              - 0
+              - Indefinite
+            retirement_warn:
+              - 604800
+              - 1 Week
+            instance_type:
+              - 487
+              - 't2.micro: T2 Micro'
+            guest_access_key_pair:
+              - 5
+              - dm-cred-pem
+            monitoring:
+              - basic
+              - Basic
+            addr_mode:
+              - dhcp
+              - DHCP
+            name: Provision VM in AWS
+            description: Creates an AWS EC2 Micro instance.
+            long_description: This service provisions an AWS EC2 Micro instance.
+            display: true
+            catalog_id: '1'
+            dialog_id: '2'
+            st_prov_type: amazon
+            tenant_ids: [ 2 ]
+            zone_id: '2'
+            currency: 146
+            code_currency: Price / Month (in USD)
+            price: '500'
+            retire_fqname: /Service/Retirement/StateMachines/ServiceRetirement/Default
+            fqname: /Service/Provisioning/StateMachines/ServiceProvision_Template/CatalogItemInitialization
+            available_dialogs:
+              '1': Transform VM
+              '2': Provision VM
+              '3': install-icam-agent
+            service_type: atomic
+            src_vm_nics: []
+            src_vm_lans: []
+            src_ems_id:
+              - 4
+              - dk-aws
+  placement:
+    deployers:
+      - name: ibminfra
+        namespace: management-infrastructure-management

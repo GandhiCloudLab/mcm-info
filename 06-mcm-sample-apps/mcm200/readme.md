@@ -8,8 +8,11 @@
 
 ## Simple Apps with Hybird Deployables
 
-Note: These apps yet to be tested.
-
  - [vpro](vpro) 
 
  - [wpro](wpro) 
+
+
+## Simple Apps with Hybird Deployables with VM
+
+ - [vzro](zpro) 
