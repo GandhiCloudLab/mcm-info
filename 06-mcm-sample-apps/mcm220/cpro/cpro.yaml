@@ -1,0 +1,195 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cpro-app-ns
+  labels:
+    app: cpro-application
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cpro-channel-ns
+  labels:
+    app: cpro-application
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cpro-subscription-ns
+  labels:
+    app: cpro-application
+---
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: cpro
+  namespace: cpro-subscription-ns
+  labels:
+    app: cpro-application
+spec:
+  selector:
+    matchLabels:
+      app: cpro-application
+  componentKinds:
+    - group: apps.open-cluster-management.io
+      kind: Subscription
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: Channel
+metadata:
+  name: cpro-channel
+  namespace: cpro-channel-ns
+  labels:
+    app: cpro-application
+spec:
+  type: Namespace
+  pathname: cpro-channel-ns
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: Subscription
+metadata:
+  name: cpro-subscription
+  namespace: cpro-subscription-ns
+  labels:
+    app: cpro-application
+    test: test1
+spec:
+  channel: cpro-channel-ns/cpro-channel
+  packageFilter:
+    labelSelector:
+      matchLabels:
+        app: cpro-application
+  placement:
+    local: true
+    placementRef:
+      name: cpro-placementrule
+      kind: PlacementRule
+  overrides:
+    - clusterName: /
+      clusterOverrides:
+        - path: metadata.namespace
+          value: cpro-app-ns
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: cpro-placementrule
+  namespace: cpro-subscription-ns
+  labels:
+    app: cpro-application
+spec:
+  clusterSelector:
+    matchExpressions:
+    - key: name
+      operator: In
+      values:
+      - local-cluster
+  clusterReplicas: 1
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: Deployable
+metadata:
+  name: cpro-deployable-deployment-frontweb
+  namespace: cpro-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: cpro-application
+    subapp: frontweb
+    apps.open-cluster-management.io/channel: cpro-channel
+    apps.open-cluster-management.io/channel-type: Namespace    
+spec:
+  template:
+    kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: cpro-frontweb
+      namespace: cpro-app-ns
+      labels:
+        app: cpro-application
+        subname: frontweb
+    spec:
+      selector:
+        matchLabels:
+          app: cpro-application
+          subname: frontweb
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            app: cpro-application
+            subname: frontweb
+        spec:
+          containers:
+            - name: container-nginx
+              image: "gandhicloudlab/cpro-bankweb:latest"
+              imagePullPolicy: Always
+              ports:
+                - name: my-http
+                  containerPort: 9030
+              resources:
+                {}
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: Deployable
+metadata:
+  name: cpro-deployable-service-frontweb
+  namespace: cpro-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: cpro-application
+    subapp: frontweb
+    apps.open-cluster-management.io/channel: cpro-channel
+    apps.open-cluster-management.io/channel-type: Namespace    
+spec:
+  template:
+    kind: Service
+    apiVersion: v1
+    metadata:
+      name: cpro-frontweb
+      namespace: cpro-ns
+      labels:
+        app: cpro-application
+        subname: frontweb
+    spec:
+      type: LoadBalancer
+      ports:
+        - name: my-http
+          port: 9090
+          targetPort: my-http
+      selector:
+        app: cpro-application
+        subname: frontweb
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: Deployable
+metadata:
+  name: cpro-deployable-route-frontweb
+  namespace: cpro-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: cpro-application
+    subapp: frontweb
+    apps.open-cluster-management.io/channel: cpro-channel
+    apps.open-cluster-management.io/channel-type: Namespace    
+spec:
+  template:
+    kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: cpro-frontweb
+      namespace: cpro-ns
+      labels:
+        app: cpro-application
+        subname: frontweb
+    spec:
+      path: /
+      to:
+        kind: Service
+        name: cpro-frontweb
+        weight: 100
+      port:
+        targetPort: my-http
+---
